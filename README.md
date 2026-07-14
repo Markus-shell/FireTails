@@ -29,5 +29,5 @@ To open and compile this project on your machine:
 
 ### 1. Clone the project
 ```bash
-git clone [https://github.com/Markus-shell/FireTails.git](https://github.com/Markus-shell/FireTails.git)
+git clone https://github.com/Markus-shell/FireTails.git
 cd fenix
