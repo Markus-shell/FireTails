@@ -163,6 +163,15 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
                     sharedPrefs.edit().putBoolean("firetails_first_search_setup_done", true).apply()
                 }
             }
+            // Désactive les raccourcis et histoires sponsorisés au premier démarrage
+            sharedPrefs.edit()
+                .putBoolean("pref_key_sponsored_top_sites", false)
+                .putBoolean("pref_key_sponsored_stories", false) // Éteint aussi Pocket/Stories sponsorisés
+                .apply()
+
+            sharedPrefs.edit()
+                .putBoolean("pref_key_enable_contile", false)
+                .apply()
         }
     }
 

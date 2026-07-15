@@ -27,6 +27,7 @@ class SponsoredStoriesSettingsFragment : PreferenceFragmentCompat() {
             onPreferenceChangeListener = SharedPreferenceUpdater()
         }
 
+
         requirePreference<EditTextPreference>(R.string.pref_key_custom_sponsored_stories_site_id).apply {
             isVisible = Config.channel.isNightlyOrDebug
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, newValue ->
