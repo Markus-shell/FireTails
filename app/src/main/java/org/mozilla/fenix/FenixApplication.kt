@@ -151,6 +151,19 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
         GlobalScope.launch(Dispatchers.IO) {
             PerfStartup.applicationOnCreate.accumulateSamples(listOf(durationMillis))
         }
+        val sharedPrefs = this.getSharedPreferences("${this.packageName}_preferences", android.content.Context.MODE_PRIVATE)
+        val isFirstSearchEngineSetup = !sharedPrefs.contains("firetails_first_search_setup_done")
+
+        if (isFirstSearchEngineSetup) {
+            components.core.store.waitForSelectedOrDefaultSearchEngine { _ ->
+                components.core.store.state.search.searchEngines.firstOrNull {
+                    it.id == "duckduckgo" || it.name.lowercase().contains("duck")
+                }?.let { ddgEngine ->
+                    components.useCases.searchUseCases.selectSearchEngine(ddgEngine)
+                    sharedPrefs.edit().putBoolean("firetails_first_search_setup_done", true).apply()
+                }
+            }
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class) // GlobalScope usage
@@ -773,6 +786,14 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
 
         browserStore.waitForSelectedOrDefaultSearchEngine { searchEngine ->
             searchEngine?.let {
+                if (searchEngine.id == "google") {
+                    components.core.store.state.search.searchEngines.firstOrNull { it.id == "duckduckgo" }?.let { ddgEngine ->
+                        components.useCases.searchUseCases.selectSearchEngine(ddgEngine)
+                        return@waitForSelectedOrDefaultSearchEngine // On stoppe l'exécution ici, le prochain appel aura le bon moteur
+                    }
+                }
+                // ----------------------------
+
                 val sendSearchUrl =
                     !searchEngine.isCustomEngine() || searchEngine.isKnownSearchDomain()
                 if (sendSearchUrl) {

@@ -34,7 +34,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "org.markus-shell"
+        applicationId "org.markus"
         minSdkVersion Config.minSdkVersion
         targetSdkVersion Config.targetSdkVersion
         versionCode 1
